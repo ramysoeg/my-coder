@@ -139,7 +139,7 @@ export default defineComponent({
     const formatMessage = (content: string) => {
       try {
         // Convert markdown to HTML
-        const html = marked.parse(content);
+        const html = marked(content);
         
         // Sanitize the HTML
         const sanitized = DOMPurify.sanitize(html);
