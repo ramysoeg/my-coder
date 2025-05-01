@@ -266,11 +266,13 @@ export default defineComponent({
           contextMessage
         ];
         
+        // Get response from AI service
         const response = await aiService.sendMessage(allMessages);
         
         // Add timestamp to response
         const responseWithTime: MessageWithTimestamp = {
-          ...response,
+          role: response.role,
+          content: response.content,
           timestamp: new Date()
         };
         
