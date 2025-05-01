@@ -11,15 +11,96 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
     #app {
       height: 100%;
       display: flex;
       flex-direction: column;
     }
+    
+    /* Web mode banner */
+    .web-mode-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #007acc;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    
+    /* Show banner only in web mode */
+    body.web-mode .web-mode-banner {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div id="app"></div>
+  <div class="web-mode-banner">
+    Running in Web Mode - Some features requiring Electron may be limited
+  </div>
+  
+  <script>
+    // Check if running in web mode (not in Electron)
+    if (typeof process === 'undefined' || !process.versions || !process.versions.electron) {
+      document.body.classList.add('web-mode');
+      
+      // Mock the electron API for web mode
+      window.electron = {
+        ipcRenderer: {
+          invoke: async (channel, ...args) => {
+            console.log(`IPC invoke called: ${channel}`, args);
+            
+            // Mock responses for different channels
+            if (channel === 'get-files') {
+              return [
+                { name: 'src', isDirectory: true, path: '/src' },
+                { name: 'package.json', isDirectory: false, path: '/package.json' },
+                { name: 'README.md', isDirectory: false, path: '/README.md' }
+              ];
+            }
+            
+            if (channel === 'get-directory-contents') {
+              const path = args[0];
+              if (path === '/src') {
+                return [
+                  { name: 'main', isDirectory: true, path: '/src/main' },
+                  { name: 'renderer', isDirectory: true, path: '/src/renderer' },
+                  { name: 'preload.ts', isDirectory: false, path: '/src/preload.ts' }
+                ];
+              }
+              return [];
+            }
+            
+            if (channel === 'read-file') {
+              return '// This is a mock file content in web mode\n// Electron features are not available\n\nconsole.log("Hello from web mode!");\n';
+            }
+            
+            if (channel === 'write-file') {
+              console.log('Mock file write:', args);
+              return true;
+            }
+            
+            return null;
+          },
+          on: (channel, func) => {
+            console.log(`IPC on listener added: ${channel}`);
+          },
+          once: (channel, func) => {
+            console.log(`IPC once listener added: ${channel}`);
+          },
+          removeListener: (channel, func) => {
+            console.log(`IPC listener removed: ${channel}`);
+          }
+        }
+      };
+    }
+  </script>
 </body>
 </html>
