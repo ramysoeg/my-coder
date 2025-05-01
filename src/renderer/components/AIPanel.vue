@@ -89,8 +89,6 @@
 import { defineComponent, ref, PropType, computed, nextTick, onMounted, watch } from 'vue';
 import { Message, aiService } from '../services/aiService';
 import { useFileStore } from '../stores/fileStore';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/vs2015.css';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
@@ -144,19 +142,14 @@ export default defineComponent({
         // Sanitize the HTML
         const sanitized = DOMPurify.sanitize(html);
         
-        // Highlight code blocks
-        const highlighted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
+        // Add a simple class to code blocks for styling
+        const formatted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
           (_, lang, code) => {
-            try {
-              const highlighted = hljs.highlight(code, { language: lang }).value;
-              return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
-            } catch (e) {
-              return `<pre><code class="hljs">${hljs.highlightAuto(code).value}</code></pre>`;
-            }
+            return `<pre><code class="code-block language-${lang}">${code}</code></pre>`;
           }
         );
         
-        return highlighted;
+        return formatted;
       } catch (error) {
         console.error('Error formatting message:', error);
         return `<p>${content}</p>`;
@@ -495,6 +488,26 @@ export default defineComponent({
 .ai-message-content :deep(code) {
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 13px;
+}
+
+.ai-message-content :deep(.code-block) {
+  display: block;
+  color: #d4d4d4;
+  background-color: #1e1e1e;
+  padding: 5px;
+}
+
+.ai-message-content :deep(.language-javascript),
+.ai-message-content :deep(.language-typescript) {
+  color: #9cdcfe;
+}
+
+.ai-message-content :deep(.language-html) {
+  color: #ce9178;
+}
+
+.ai-message-content :deep(.language-css) {
+  color: #d7ba7d;
 }
 
 .ai-message-content :deep(p) {
