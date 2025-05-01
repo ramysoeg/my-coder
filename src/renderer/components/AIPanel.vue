@@ -144,7 +144,7 @@ export default defineComponent({
         
         // Add a simple class to code blocks for styling
         const formatted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
-          (_, lang, code) => {
+          (_: string, lang: string, code: string) => {
             return `<pre><code class="code-block language-${lang}">${code}</code></pre>`;
           }
         );
