@@ -95,6 +95,21 @@ ipcMain.handle('save-file', async (_, { filePath, content }: { filePath: string,
 });
 
 // Directory operations
+ipcMain.handle('open-directory', async () => {
+  if (!mainWindow) return { canceled: true };
+
+  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+
+  if (canceled || filePaths.length === 0) {
+    return { canceled: true };
+  }
+
+  const directoryPath = filePaths[0];
+  return { canceled: false, directoryPath };
+});
+
 ipcMain.handle('read-directory', async (_, dirPath: string) => {
   try {
     const entries = fs.readdirSync(dirPath, { withFileTypes: true });
@@ -107,6 +122,17 @@ ipcMain.handle('read-directory', async (_, dirPath: string) => {
     return { success: true, files };
   } catch (error) {
     console.error('Error reading directory:', error);
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+// File read operation
+ipcMain.handle('read-file', async (_, filePath: string) => {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return { success: true, content };
+  } catch (error) {
+    console.error('Error reading file:', error);
     return { success: false, error: (error as Error).message };
   }
 });
