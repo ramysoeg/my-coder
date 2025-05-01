@@ -92,7 +92,7 @@ import { useFileStore } from '../stores/fileStore';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css';
 import DOMPurify from 'dompurify';
-import marked from 'marked';
+import { marked } from 'marked';
 
 interface MessageWithTimestamp extends Message {
   timestamp?: Date;

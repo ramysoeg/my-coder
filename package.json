@@ -4,10 +4,10 @@
   "main": "dist/main/main.js",
   "description": "A modern code editor with AI assistance inspired by VSCode, Cursor, and Windsurf",
   "scripts": {
-    "start": "electron .",
+    "start": "electron --no-sandbox .",
     "dev": "concurrently \"npm run dev:webpack\" \"npm run dev:electron\"",
     "dev:webpack": "webpack serve --mode development",
-    "dev:electron": "wait-on http://localhost:12000 && cross-env NODE_ENV=development electron .",
+    "dev:electron": "wait-on http://localhost:12000 && cross-env NODE_ENV=development electron --no-sandbox .",
     "build": "webpack --mode production && tsc -p tsconfig.electron.json",
     "package": "npm run build && electron-builder build --publish never",
     "test": "echo \"Error: no test specified\" && exit 1"
