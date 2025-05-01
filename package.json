@@ -16,7 +16,13 @@
     "type": "git",
     "url": "git+https://github.com/ramysoeg/my-coder.git"
   },
-  "keywords": ["editor", "code", "IDE", "AI", "development"],
+  "keywords": [
+    "editor",
+    "code",
+    "IDE",
+    "AI",
+    "development"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -26,9 +32,12 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@types/node": "^22.15.3",
+    "dompurify": "^3.2.5",
     "electron": "^36.0.1",
     "electron-builder": "^26.0.12",
     "electron-is-dev": "^3.0.1",
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.11",
     "monaco-editor": "^0.52.2",
     "pinia": "^3.0.2",
     "typescript": "^5.8.3",
