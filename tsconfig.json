@@ -12,13 +12,14 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/renderer/*"],
       "*": ["node_modules/*"]
-    }
+    },
+    "jsx": "preserve"
   },
-  "include": ["src/**/*", "src/**/*.vue"],
+  "include": ["src/**/*", "src/**/*.vue", "src/**/*.ts", "src/**/*.tsx", "src/vue-shims.d.ts"],
   "exclude": ["node_modules"]
 }
