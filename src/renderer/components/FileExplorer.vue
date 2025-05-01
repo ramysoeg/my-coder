@@ -110,56 +110,7 @@ app.mount('#app');`,
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue';
-import * as monaco from 'monaco-editor';
-
-export default defineComponent({
-  name: 'MonacoEditor',
-  props: {
-    value: {
-      type: String,
-      default: ''
-    },
-    language: {
-      type: String,
-      default: 'javascript'
-    }
-  },
-  setup(props, { emit }) {
-    const editorContainer = ref<HTMLElement | null>(null);
-    let editor: monaco.editor.IStandaloneCodeEditor | null = null;
-
-    onMounted(() => {
-      if (editorContainer.value) {
-        editor = monaco.editor.create(editorContainer.value, {
-          value: props.value,
-          language: props.language,
-          theme: 'vs-dark',
-          automaticLayout: true,
-          minimap: {
-            enabled: true
-          }
-        });
-
-        editor.onDidChangeModelContent(() => {
-          if (editor) {
-            emit('update:value', editor.getValue());
-          }
-        });
-      }
-    });
-
-    watch(() => props.value, (newValue) => {
-      if (editor && newValue !== editor.getValue()) {
-        editor.setValue(newValue);
-      }
-    });
-
-    return {
-      editorContainer
-    };
-  }
-});
+// Monaco Editor component
 </script>
 
 <style scoped>
