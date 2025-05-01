@@ -1,6 +1,6 @@
 # MyCoder - Modern Code Editor with AI Integration
 
-MyCoder is a modern code editor inspired by VSCode with integrated AI assistance, similar to Cursor and Windsurf. Built with Electron, Vue.js, and Monaco Editor.
+MyCoder is a modern code editor inspired by VSCode with integrated AI assistance, similar to Cursor and Windsurf. Built with Electron, Vue.js, and Monaco Editor for a fast, responsive coding experience.
 
 ## Features
 
@@ -10,6 +10,9 @@ MyCoder is a modern code editor inspired by VSCode with integrated AI assistance
 - 🎨 Dark theme and customizable UI
 - ⚡ Fast and responsive interface
 - 🔄 Real-time code analysis and suggestions
+- 🔌 Extensible architecture
+- 🔍 Smart code completion
+- 🔗 AI API integration (OpenAI)
 
 ## Tech Stack
 
@@ -75,18 +78,69 @@ my-coder/
 
 The AI assistant is designed to help with:
 
-- Code explanations
-- Debugging assistance
-- Code suggestions
-- Best practices
-- Documentation
+- Code explanations and understanding
+- Debugging assistance and error fixing
+- Code suggestions and improvements
+- Best practices and patterns
+- Documentation generation
+- Refactoring suggestions
+- Test case generation
+- Learning new concepts
+
+### AI Features
+
+- **Context-aware assistance**: The AI understands your current file and project context
+- **Code selection**: Select code to get specific help on that section
+- **Insert to editor**: Insert AI suggestions directly into your code
+- **Configurable models**: Choose between different AI models (GPT-4, GPT-3.5, etc.)
+- **Custom API endpoints**: Use your own API endpoints or proxies
+- **Conversation history**: Review and continue previous conversations
+- **Markdown support**: Rich formatting with syntax highlighting
 
 ## License
 
 This project is licensed under the ISC License.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+S` / `Cmd+S` | Save file |
+| `Ctrl+O` / `Cmd+O` | Open file |
+| `Ctrl+N` / `Cmd+N` | New file |
+| `Ctrl+F` / `Cmd+F` | Find in file |
+| `Ctrl+Shift+F` / `Cmd+Shift+F` | Find in project |
+| `Ctrl+Space` | Trigger suggestions |
+| `F1` | Command palette |
+
+## Screenshots
+
+*Coming soon*
+
+## Roadmap
+
+- [ ] Plugin system for extensions
+- [ ] Git integration
+- [ ] Terminal integration
+- [ ] Multiple editor tabs
+- [ ] Settings synchronization
+- [ ] Themes and customization
+- [ ] Collaborative editing
+- [ ] Advanced AI features (code generation, refactoring)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## Acknowledgements
 
 - Inspired by VSCode, Cursor, and Windsurf
 - Built with Electron and Vue.js
 - Uses Monaco Editor for code editing
+- Special thanks to the open source community
