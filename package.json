@@ -8,6 +8,7 @@
     "dev": "concurrently \"npm run dev:webpack\" \"npm run dev:electron\"",
     "dev:webpack": "webpack serve --mode development",
     "dev:electron": "wait-on http://localhost:12000 && cross-env NODE_ENV=development electron --no-sandbox .",
+    "dev:web": "webpack serve --mode development --port 12000 --host 0.0.0.0 --allowed-hosts all",
     "build": "webpack --mode production && tsc -p tsconfig.electron.json",
     "package": "npm run build && electron-builder build --publish never",
     "test": "echo \"Error: no test specified\" && exit 1"
