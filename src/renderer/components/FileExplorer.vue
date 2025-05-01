@@ -55,11 +55,17 @@ import { defineComponent, ref, computed, onMounted, watch } from 'vue';
 import { useFileStore } from '../stores/fileStore';
 import * as path from 'path';
 
+interface FileItem {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+}
+
 export default defineComponent({
   name: 'FileExplorer',
   setup() {
     const fileStore = useFileStore();
-    const files = ref([]);
+    const files = ref<FileItem[]>([]);
     const activeFile = ref('');
     const currentPath = ref('');
     const isLoading = ref(false);
@@ -84,7 +90,7 @@ export default defineComponent({
       { name: 'AIPanel.vue', path: '/sample/src/components/AIPanel.vue', isDirectory: false },
     ];
 
-    const SAMPLE_FILE_CONTENTS = {
+    const SAMPLE_FILE_CONTENTS: Record<string, string> = {
       '/sample/package.json': '{\n  "name": "my-coder",\n  "version": "1.0.0"\n}',
       '/sample/README.md': '# MyCoder\n\nA VSCode-like IDE with integrated AI assistant.',
       '/sample/src/main.ts': 'console.log("Hello World");',
@@ -130,7 +136,7 @@ export default defineComponent({
       }
     };
 
-    const loadDirectory = async (dirPath) => {
+    const loadDirectory = async (dirPath: string) => {
       isLoading.value = true;
       error.value = '';
       
@@ -191,7 +197,7 @@ export default defineComponent({
       }
     };
 
-    const selectFile = async (file) => {
+    const selectFile = async (file: FileItem) => {
       if (file.isDirectory) {
         await loadDirectory(file.path);
         return;
@@ -200,7 +206,7 @@ export default defineComponent({
       activeFile.value = file.path;
     };
 
-    const openFile = async (file) => {
+    const openFile = async (file: FileItem) => {
       if (file.isDirectory) {
         await loadDirectory(file.path);
         return;
