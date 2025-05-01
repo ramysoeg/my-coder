@@ -5,11 +5,16 @@
     </div>
     <div class="main-content">
       <div class="toolbar">
-        <button @click="openFile">Open</button>
-        <button @click="saveFile">Save</button>
-        <button @click="newFile">New</button>
+        <button @click="openFile" title="Open File (Ctrl+O)">Open</button>
+        <button @click="saveFile" title="Save File (Ctrl+S)">Save</button>
+        <button @click="newFile" title="New File (Ctrl+N)">New</button>
         <div class="spacer"></div>
-        <button @click="toggleAIPanel">{{ aiPanelOpen ? 'Hide AI' : 'Show AI' }}</button>
+        <button @click="toggleAISettings" title="AI Settings">
+          <span class="icon">Settings</span>
+        </button>
+        <button @click="toggleAIPanel" title="Toggle AI Panel">
+          {{ aiPanelOpen ? 'Hide AI' : 'Show AI' }}
+        </button>
       </div>
       <div class="editor-container">
         <MonacoEditor
@@ -17,6 +22,7 @@
           :language="language"
           :theme="'vs-dark'"
           @change="onChange"
+          @selection-change="handleSelectionChange"
         />
       </div>
       <div class="statusbar">
@@ -25,9 +31,22 @@
       <AIPanel 
         v-if="aiPanelOpen" 
         :isOpen="true"
+        :selectedCode="selectedCode"
         @toggle="toggleAIPanel"
         @message-sent="handleAIMessage"
+        @insert-to-editor="insertToEditor"
       />
+      
+      <!-- AI Settings Modal -->
+      <div v-if="showAISettings" class="modal-overlay" @click="toggleAISettings">
+        <div class="modal-content" @click.stop>
+          <div class="modal-header">
+            <h2>AI Assistant Settings</h2>
+            <button class="close-button" @click="toggleAISettings">X</button>
+          </div>
+          <AISettings @settings-saved="handleSettingsSaved" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +56,7 @@ import { defineComponent, ref, onMounted, watch } from 'vue';
 import MonacoEditor from './components/MonacoEditor.vue';
 import FileExplorer from './components/FileExplorer.vue';
 import AIPanel from './components/AIPanel.vue';
+import AISettings from './components/AISettings.vue';
 import { useFileStore } from './stores/fileStore';
 import { Message } from './services/aiService';
 
@@ -45,7 +65,8 @@ export default defineComponent({
   components: {
     MonacoEditor,
     FileExplorer,
-    AIPanel
+    AIPanel,
+    AISettings
   },
   setup() {
     const fileStore = useFileStore();
@@ -54,6 +75,8 @@ export default defineComponent({
     const currentFilePath = ref('');
     const aiPanelOpen = ref(true);
     const isModified = ref(false);
+    const selectedCode = ref('');
+    const showAISettings = ref(false);
 
     // Watch for changes in the code and update the modified state
     watch(code, () => {
@@ -169,8 +192,27 @@ export default defineComponent({
       }
     };
 
+    const handleSelectionChange = (selection: string) => {
+      selectedCode.value = selection;
+    };
+
+    const insertToEditor = (text: string) => {
+      // This would be implemented in the Monaco editor component
+      // For now, we'll just append to the current code
+      code.value += '\n\n' + text;
+    };
+
     const toggleAIPanel = () => {
       aiPanelOpen.value = !aiPanelOpen.value;
+    };
+
+    const toggleAISettings = () => {
+      showAISettings.value = !showAISettings.value;
+    };
+
+    const handleSettingsSaved = (config: any) => {
+      console.log('AI settings saved:', config);
+      // Could show a notification or perform additional actions
     };
 
     const handleAIMessage = (event: { userMessage: Message, aiResponse: Message }) => {
@@ -204,11 +246,17 @@ export default defineComponent({
       currentFilePath,
       aiPanelOpen,
       isModified,
+      selectedCode,
+      showAISettings,
       openFile,
       saveFile,
       newFile,
       onChange,
+      handleSelectionChange,
+      insertToEditor,
       toggleAIPanel,
+      toggleAISettings,
+      handleSettingsSaved,
       handleAIMessage
     };
   }
@@ -260,6 +308,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .toolbar {
@@ -286,6 +335,11 @@ body {
   background-color: #505050;
 }
 
+.toolbar .icon {
+  font-size: 12px;
+  margin-right: 2px;
+}
+
 .spacer {
   flex: 1;
 }
@@ -303,6 +357,56 @@ body {
   padding: 0 10px;
   font-size: 12px;
   color: white;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--background-color);
+  border-radius: 6px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #ccc;
 }
 
 /* Scrollbar styling */

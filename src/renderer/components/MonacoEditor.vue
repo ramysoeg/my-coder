@@ -26,7 +26,7 @@ export default defineComponent({
       default: () => ({})
     }
   },
-  emits: ['update:modelValue', 'change'],
+  emits: ['update:modelValue', 'change', 'selection-change'],
   setup(props, { emit }) {
     const editorContainer = ref<HTMLElement | null>(null);
     let editor: monaco.editor.IStandaloneCodeEditor | null = null;
@@ -53,6 +53,16 @@ export default defineComponent({
         const value = editor.getValue();
         emit('update:modelValue', value);
         emit('change', value);
+      });
+      
+      // Handle selection changes
+      editor.onDidChangeCursorSelection((e) => {
+        if (!editor) return;
+        
+        const selection = editor.getModel()?.getValueInRange(e.selection) || '';
+        if (selection) {
+          emit('selection-change', selection);
+        }
       });
     });
 
@@ -85,8 +95,30 @@ export default defineComponent({
       }
     });
 
+    // Method to insert text at cursor position
+    const insertTextAtCursor = (text: string) => {
+      if (!editor) return;
+      
+      const selection = editor.getSelection();
+      if (selection) {
+        const position = selection.getStartPosition();
+        editor.executeEdits('', [
+          {
+            range: new monaco.Range(
+              position.lineNumber,
+              position.column,
+              position.lineNumber,
+              position.column
+            ),
+            text: text
+          }
+        ]);
+      }
+    };
+
     return {
-      editorContainer
+      editorContainer,
+      insertTextAtCursor
     };
   }
 });
