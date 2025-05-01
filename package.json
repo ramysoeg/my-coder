@@ -1,0 +1,80 @@
+{
+  "name": "my-coder",
+  "version": "1.0.0",
+  "main": "dist/main/main.js",
+  "description": "A modern code editor with AI assistance inspired by VSCode, Cursor, and Windsurf",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:webpack\" \"npm run dev:electron\"",
+    "dev:webpack": "webpack serve --mode development",
+    "dev:electron": "wait-on http://localhost:12000 && cross-env NODE_ENV=development electron .",
+    "build": "webpack --mode production && tsc -p tsconfig.electron.json",
+    "package": "npm run build && electron-builder build --publish never",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramysoeg/my-coder.git"
+  },
+  "keywords": ["editor", "code", "IDE", "AI", "development"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ramysoeg/my-coder/issues"
+  },
+  "homepage": "https://github.com/ramysoeg/my-coder#readme",
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@types/node": "^22.15.3",
+    "electron": "^36.0.1",
+    "electron-builder": "^26.0.12",
+    "electron-is-dev": "^3.0.1",
+    "monaco-editor": "^0.52.2",
+    "pinia": "^3.0.2",
+    "typescript": "^5.8.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vue/compiler-sfc": "^3.5.13",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.25.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-vue": "^10.1.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.2",
+    "vue-loader": "^17.4.2",
+    "wait-on": "^8.0.3",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
+  },
+  "build": {
+    "appId": "com.mycoder.app",
+    "productName": "MyCoder",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "release"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Development"
+    }
+  }
+}
