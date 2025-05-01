@@ -38,9 +38,7 @@
           @dblclick="openFile(file)"
         >
           <span v-if="file.isDirectory">📁</span>
-          <span v-else-if="isImageFile(file.name)">🖼️</span>
-          <span v-else-if="isCodeFile(file.name)">📄</span>
-          <span v-else>📝</span>
+          <span v-else>📄</span>
           {{ file.name }}
         </div>
         
@@ -57,50 +55,40 @@ import { defineComponent, ref, computed, onMounted, watch } from 'vue';
 import { useFileStore } from '../stores/fileStore';
 import * as path from 'path';
 
-// Sample files for web mode demo
-const SAMPLE_FILES = [
-  { name: 'src', path: '/sample/src', isDirectory: true },
-  { name: 'public', path: '/sample/public', isDirectory: true },
-  { name: 'package.json', path: '/sample/package.json', isDirectory: false },
-  { name: 'README.md', path: '/sample/README.md', isDirectory: false },
-  { name: 'tsconfig.json', path: '/sample/tsconfig.json', isDirectory: false },
-];
-
-const SAMPLE_SRC_FILES = [
-  { name: 'components', path: '/sample/src/components', isDirectory: true },
-  { name: 'stores', path: '/sample/src/stores', isDirectory: true },
-  { name: 'main.ts', path: '/sample/src/main.ts', isDirectory: false },
-  { name: 'App.vue', path: '/sample/src/App.vue', isDirectory: false },
-];
-
-const SAMPLE_COMPONENTS_FILES = [
-  { name: 'Editor.vue', path: '/sample/src/components/Editor.vue', isDirectory: false },
-  { name: 'FileExplorer.vue', path: '/sample/src/components/FileExplorer.vue', isDirectory: false },
-  { name: 'AIPanel.vue', path: '/sample/src/components/AIPanel.vue', isDirectory: false },
-];
-
-const SAMPLE_FILE_CONTENTS = {
-  '/sample/package.json': '{\n  "name": "my-coder",\n  "version": "1.0.0",\n  "description": "VSCode-like IDE with AI assistant",\n  "main": "dist/main.js",\n  "scripts": {\n    "start": "electron .",\n    "dev": "webpack serve --mode development"\n  },\n  "dependencies": {\n    "electron": "^28.0.0",\n    "monaco-editor": "^0.45.0",\n    "vue": "^3.3.0"\n  }\n}',
-  '/sample/README.md': '# MyCoder\n\nA VSCode-like IDE with integrated AI assistant.\n\n## Features\n\n- Monaco Editor integration\n- File explorer\n- AI assistant panel\n- Electron-based desktop app',
-  '/sample/src/main.ts': 'import { createApp } from \'vue\';\nimport { createPinia } from \'pinia\';\nimport App from \'./App.vue\';\n\nconst pinia = createPinia();\nconst app = createApp(App);\n\napp.use(pinia);\napp.mount(\'#app\');',
-  '/sample/src/components/Editor.vue': '<template>\n  <div class="monaco-editor-container" ref="editorContainer"></div>\n</template>\n\n<script lang="ts">\n// Monaco Editor component\n</script>\n\n<style scoped>\n.monaco-editor-container {\n  width: 100%;\n  height: 100%;\n}\n</style>'
-};
-
-interface FileItem {
-  name: string;
-  path: string;
-  isDirectory: boolean;
-}
-
 export default defineComponent({
   name: 'FileExplorer',
   setup() {
     const fileStore = useFileStore();
-    const files = ref<FileItem[]>([]);
+    const files = ref([]);
     const activeFile = ref('');
     const currentPath = ref('');
     const isLoading = ref(false);
     const error = ref('');
+
+    // Sample files for web mode demo
+    const SAMPLE_FILES = [
+      { name: 'src', path: '/sample/src', isDirectory: true },
+      { name: 'package.json', path: '/sample/package.json', isDirectory: false },
+      { name: 'README.md', path: '/sample/README.md', isDirectory: false },
+    ];
+
+    const SAMPLE_SRC_FILES = [
+      { name: 'components', path: '/sample/src/components', isDirectory: true },
+      { name: 'main.ts', path: '/sample/src/main.ts', isDirectory: false },
+      { name: 'App.vue', path: '/sample/src/App.vue', isDirectory: false },
+    ];
+
+    const SAMPLE_COMPONENTS_FILES = [
+      { name: 'Editor.vue', path: '/sample/src/components/Editor.vue', isDirectory: false },
+      { name: 'FileExplorer.vue', path: '/sample/src/components/FileExplorer.vue', isDirectory: false },
+      { name: 'AIPanel.vue', path: '/sample/src/components/AIPanel.vue', isDirectory: false },
+    ];
+
+    const SAMPLE_FILE_CONTENTS = {
+      '/sample/package.json': '{\n  "name": "my-coder",\n  "version": "1.0.0"\n}',
+      '/sample/README.md': '# MyCoder\n\nA VSCode-like IDE with integrated AI assistant.',
+      '/sample/src/main.ts': 'console.log("Hello World");',
+    };
 
     const parentPath = computed(() => {
       if (!currentPath.value) return null;
@@ -142,7 +130,7 @@ export default defineComponent({
       }
     };
 
-    const loadDirectory = async (dirPath: string) => {
+    const loadDirectory = async (dirPath) => {
       isLoading.value = true;
       error.value = '';
       
@@ -203,7 +191,7 @@ export default defineComponent({
       }
     };
 
-    const selectFile = async (file: FileItem) => {
+    const selectFile = async (file) => {
       if (file.isDirectory) {
         await loadDirectory(file.path);
         return;
@@ -212,7 +200,7 @@ export default defineComponent({
       activeFile.value = file.path;
     };
 
-    const openFile = async (file: FileItem) => {
+    const openFile = async (file) => {
       if (file.isDirectory) {
         await loadDirectory(file.path);
         return;
@@ -262,22 +250,6 @@ export default defineComponent({
       }
     };
 
-    const isImageFile = (filename: string): boolean => {
-      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
-      const ext = path.extname(filename).toLowerCase();
-      return imageExtensions.includes(ext);
-    };
-
-    const isCodeFile = (filename: string): boolean => {
-      const codeExtensions = [
-        '.js', '.ts', '.jsx', '.tsx', '.vue', '.html', '.css', '.scss', 
-        '.json', '.py', '.rb', '.go', '.java', '.c', '.cpp', '.cs', 
-        '.php', '.swift', '.kt', '.rs', '.md', '.txt'
-      ];
-      const ext = path.extname(filename).toLowerCase();
-      return codeExtensions.includes(ext);
-    };
-
     // Watch for changes in the file store
     watch(() => fileStore.currentFile, (newFile) => {
       if (newFile) {
@@ -313,9 +285,7 @@ export default defineComponent({
       refreshFiles,
       selectFile,
       openFile,
-      navigateToParent,
-      isImageFile,
-      isCodeFile
+      navigateToParent
     };
   }
 });
