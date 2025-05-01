@@ -137,11 +137,14 @@ export default defineComponent({
     };
 
     const formatMessage = (content: string) => {
-      // Convert markdown to HTML and sanitize
-      const html = DOMPurify.sanitize(marked(content));
+      // Convert markdown to HTML
+      const html = marked(content);
+      
+      // Sanitize the HTML
+      const sanitized = DOMPurify.sanitize(html);
       
       // Highlight code blocks
-      const highlighted = html.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
+      const highlighted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
         (_, lang, code) => {
           try {
             const highlighted = hljs.highlight(code, { language: lang }).value;
