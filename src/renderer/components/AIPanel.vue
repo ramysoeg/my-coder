@@ -137,25 +137,30 @@ export default defineComponent({
     };
 
     const formatMessage = (content: string) => {
-      // Convert markdown to HTML
-      const html = marked(content);
-      
-      // Sanitize the HTML
-      const sanitized = DOMPurify.sanitize(html);
-      
-      // Highlight code blocks
-      const highlighted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
-        (_, lang, code) => {
-          try {
-            const highlighted = hljs.highlight(code, { language: lang }).value;
-            return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
-          } catch (e) {
-            return `<pre><code class="hljs">${hljs.highlightAuto(code).value}</code></pre>`;
+      try {
+        // Convert markdown to HTML
+        const html = marked.parse(content);
+        
+        // Sanitize the HTML
+        const sanitized = DOMPurify.sanitize(html);
+        
+        // Highlight code blocks
+        const highlighted = sanitized.replace(/<pre><code class="language-(\w+)">([\s\S]+?)<\/code><\/pre>/g, 
+          (_, lang, code) => {
+            try {
+              const highlighted = hljs.highlight(code, { language: lang }).value;
+              return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
+            } catch (e) {
+              return `<pre><code class="hljs">${hljs.highlightAuto(code).value}</code></pre>`;
+            }
           }
-        }
-      );
-      
-      return highlighted;
+        );
+        
+        return highlighted;
+      } catch (error) {
+        console.error('Error formatting message:', error);
+        return `<p>${content}</p>`;
+      }
     };
 
     const scrollToBottom = async () => {
