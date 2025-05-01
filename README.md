@@ -41,7 +41,59 @@ cd my-coder
 npm install
 
 # Start the development server
-npm run dev
+npm run dev:web    # For web-only mode
+npm run dev        # For Electron mode
+```
+
+### Troubleshooting
+
+If you encounter issues when running the project, try these solutions:
+
+#### Missing Dependencies
+
+If you see errors about missing dependencies like `dompurify` or `marked`:
+
+```bash
+npm install dompurify marked @types/dompurify @types/marked
+```
+
+#### Electron Installation Issues
+
+If you see "Electron failed to install correctly":
+
+```bash
+# Remove the electron directory
+rm -rf node_modules/electron
+# Or on Windows:
+# rmdir /s /q node_modules\electron
+
+# Reinstall electron
+npm install electron@36.0.1
+```
+
+#### TypeScript Errors
+
+If you encounter TypeScript errors related to implicit 'any' types, make sure all function parameters have explicit type annotations. For example:
+
+```typescript
+// Instead of:
+(_, lang, code) => { ... }
+
+// Use:
+(_: string, lang: string, code: string) => { ... }
+```
+
+#### Complete Reinstallation
+
+If all else fails, try a complete reinstallation:
+
+```bash
+rm -rf node_modules package-lock.json
+# Or on Windows:
+# rmdir /s /q node_modules
+# del package-lock.json
+
+npm install
 ```
 
 ### Build for Production
