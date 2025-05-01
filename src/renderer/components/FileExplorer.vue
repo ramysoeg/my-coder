@@ -80,45 +80,10 @@ const SAMPLE_COMPONENTS_FILES = [
 ];
 
 const SAMPLE_FILE_CONTENTS = {
-  '/sample/package.json': JSON.stringify({
-    "name": "my-coder",
-    "version": "1.0.0",
-    "description": "VSCode-like IDE with AI assistant",
-    "main": "dist/main.js",
-    "scripts": {
-      "start": "electron .",
-      "dev": "webpack serve --mode development"
-    },
-    "dependencies": {
-      "electron": "^28.0.0",
-      "monaco-editor": "^0.45.0",
-      "vue": "^3.3.0"
-    }
-  }, null, 2),
+  '/sample/package.json': '{\n  "name": "my-coder",\n  "version": "1.0.0",\n  "description": "VSCode-like IDE with AI assistant",\n  "main": "dist/main.js",\n  "scripts": {\n    "start": "electron .",\n    "dev": "webpack serve --mode development"\n  },\n  "dependencies": {\n    "electron": "^28.0.0",\n    "monaco-editor": "^0.45.0",\n    "vue": "^3.3.0"\n  }\n}',
   '/sample/README.md': '# MyCoder\n\nA VSCode-like IDE with integrated AI assistant.\n\n## Features\n\n- Monaco Editor integration\n- File explorer\n- AI assistant panel\n- Electron-based desktop app',
-  '/sample/src/main.ts': `import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import App from './App.vue';
-
-const pinia = createPinia();
-const app = createApp(App);
-
-app.use(pinia);
-app.mount('#app');`,
-  '/sample/src/components/Editor.vue': `<template>
-  <div class="monaco-editor-container" ref="editorContainer"></div>
-</template>
-
-<script lang="ts">
-// Monaco Editor component
-</script>
-
-<style scoped>
-.monaco-editor-container {
-  width: 100%;
-  height: 100%;
-}
-</style>`
+  '/sample/src/main.ts': 'import { createApp } from \'vue\';\nimport { createPinia } from \'pinia\';\nimport App from \'./App.vue\';\n\nconst pinia = createPinia();\nconst app = createApp(App);\n\napp.use(pinia);\napp.mount(\'#app\');',
+  '/sample/src/components/Editor.vue': '<template>\n  <div class="monaco-editor-container" ref="editorContainer"></div>\n</template>\n\n<script lang="ts">\n// Monaco Editor component\n</script>\n\n<style scoped>\n.monaco-editor-container {\n  width: 100%;\n  height: 100%;\n}\n</style>'
 };
 
 interface FileItem {
